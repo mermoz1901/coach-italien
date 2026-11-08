@@ -70,6 +70,7 @@
   .t-new{background:#efe4d3;color:var(--muted)} .t-rep{background:var(--laguna-soft);color:var(--laguna)}
   .t-mem{background:var(--terra-soft);color:var(--terra)} .t-ok{background:var(--ok-soft);color:var(--ok)}
   .foot{display:flex;justify-content:space-between;margin-top:16px;font-size:13px;color:var(--muted)}
+  .pick{flex:1;background:#efe4d3;color:var(--ink);text-align:left;font-size:15px}.pick.on{background:var(--laguna-soft);outline:2px solid var(--laguna)}.pick small{display:block;font-weight:500;color:var(--muted);font-size:13px;margin-top:2px}
   .foot button{font-size:13px;min-height:auto;padding:6px 10px;background:none;color:var(--muted);text-decoration:underline}
   @media (max-width:560px){
     .stage{flex-direction:column}
@@ -82,7 +83,7 @@
 <body>
 <div class="app">
   <header>
-    <h1>Al bar a Venezia<small>Coach d'italien · scène 1</small></h1>
+    <h1><span id="hTitle">Al bar a Venezia</span><small id="hSub">Coach d'italien · scène 1 · au café</small></h1>
     <div class="progress"><span id="pTxt">0 / 10 maîtrisées</span></div>
   </header>
   <div class="bar"><i id="pBar"></i></div>
@@ -111,7 +112,7 @@
       <div class="bubble">
         <div id="startBox" class="start" style="padding:0;text-align:left">
           <div class="mode">Ciao !</div>
-          <div class="it" style="font-size:24px">Sono Giulia, la barista.</div>
+          <div class="it" style="font-size:24px" id="hello">Sono Giulia, la barista.</div>
           <div class="fr">Je vous fais répéter jusqu'à ce que ce soit automatique.</div>
         </div>
         <div id="cardBox" class="hidden">
@@ -124,8 +125,10 @@
       </div>
     </div>
 
-    <div id="startRow" class="row">
-      <button class="b-pri" id="btnStart" style="flex:1">▶︎ Commencer</button>
+    <div id="startRow">
+      <div class="mode" style="margin-top:18px">Choisissez la scène</div>
+      <div class="row" id="scenePick" style="margin-top:8px"></div>
+      <div class="row"><button class="b-pri" id="btnStart" style="flex:1">▶︎ Commencer</button></div>
     </div>
 
     <div id="actions" class="hidden">
@@ -144,8 +147,8 @@
 
     <div id="done" class="hidden start">
       <div class="it">Bravissimo !</div>
-      <p>Les 10 formules du café sont maîtrisées. Rejouez la scène demain pour les ancrer : c'est la répétition espacée qui les fixe.</p>
-      <button class="b-pri" id="btnReplay">Rejouer la scène</button>
+      <p>Les 10 formules de la scène sont maîtrisées. Rejouez la scène demain pour les ancrer : c'est la répétition espacée qui les fixe.</p>
+      <button class="b-pri" id="btnReplay">Rejouer la scène</button> <button class="b-sec" id="btnHome">Changer de scène</button>
     </div>
   </div>
 
@@ -156,12 +159,13 @@
 
   <div class="foot">
     <span id="voiceInfo"></span>
-    <button id="btnReset">Remettre à zéro</button>
+    <span><button id="btnScenes">Scènes</button><button id="btnReset">Remettre à zéro</button></span>
   </div>
 </div>
 
 <script>
-const PHRASES = [
+const SCENES = [
+ {id:"bar", title:"Al bar a Venezia", sub:"scène 1 · au café", hello:"Sono Giulia, la barista.", phrases:[
   {it:"Buongiorno!", fr:"Bonjour !", ph:"bouone-DJOR-no"},
   {it:"Un caffè, per favore.", fr:"Un café, s'il vous plaît.", ph:"oune kaf-FÈ, pèr fa-VO-ré"},
   {it:"Vorrei un cappuccino.", fr:"Je voudrais un cappuccino.", ph:"vor-RÈ-i oune kap-pout-CHI-no"},
@@ -171,10 +175,23 @@ const PHRASES = [
   {it:"Grazie mille!", fr:"Merci beaucoup !", ph:"GRA-tsié MIL-lé"},
   {it:"Prego.", fr:"Je vous en prie.", ph:"PRÈ-go"},
   {it:"Scusi, dov'è il bagno?", fr:"Excusez-moi, où sont les toilettes ?", ph:"SKOU-zi, do-VÈ il BA-gno"},
-  {it:"Arrivederci!", fr:"Au revoir !", ph:"ar-ri-vé-DÈR-tchi"}
+  {it:"Arrivederci!", fr:"Au revoir !", ph:"ar-ri-vé-DÈR-tchi"}]},
+ {id:"mercato", title:"Al mercato di Rialto", sub:"scène 2 · au marché", hello:"Andiamo al mercato!", phrases:[
+  {it:"Quanto costano i pomodori?", fr:"Combien coûtent les tomates ?", ph:"KOUANE-to KOS-ta-no i po-mo-DO-ri"},
+  {it:"Vorrei un chilo di pomodori.", fr:"Je voudrais un kilo de tomates.", ph:"vor-RÈ-i oune KI-lo di po-mo-DO-ri"},
+  {it:"Mezzo chilo, per favore.", fr:"Un demi-kilo, s'il vous plaît.", ph:"MÈD-dzo KI-lo, pèr fa-VO-ré"},
+  {it:"Un etto di prosciutto.", fr:"Cent grammes de jambon.", ph:"oune ÈT-to di pro-CHOUT-to"},
+  {it:"Posso assaggiare?", fr:"Je peux goûter ?", ph:"POS-so as-sad-DJA-ré"},
+  {it:"Sono freschi?", fr:"Ils sont frais ?", ph:"SO-no FRÈS-ki"},
+  {it:"Ne prendo due.", fr:"J'en prends deux.", ph:"né PRÈN-do DOU-é"},
+  {it:"Basta così, grazie.", fr:"Ça suffit, merci.", ph:"BAS-ta ko-ZI, GRA-tsié"},
+  {it:"Quant'è in tutto?", fr:"Ça fait combien en tout ?", ph:"kouane-TÈ in TOUT-to"},
+  {it:"Tenga il resto.", fr:"Gardez la monnaie.", ph:"TÈN-ga il RÈS-to"}]}
 ];
+let scene = SCENES[0], PHRASES = scene.phrases;
 // Chaque formule passe par 2 étapes : 0 = écoute et répète, 1 = de mémoire. 2 réussites d'affilée par étape.
-const STREAK = 2, ACTIVE = 4, KEY = "coach-it-scene1";
+const STREAK = 2, ACTIVE = 4;
+let KEY = "coach-it-scene1";
 
 let state, queue, cur = null, revealed = false;
 
@@ -351,9 +368,30 @@ $("btnAgain").onclick=()=>{ if(!revealed) reveal(); answer(false); };
 $("btnReplay").onclick=()=>{ state=fresh(); save(); updateProgress(); buildQueue(); next(); };
 $("btnReset").onclick=()=>{ state=fresh(); save(); updateProgress(); cur=null;
   $("cardBox").classList.add("hidden"); $("actions").classList.add("hidden"); $("done").classList.add("hidden");
-  $("startBox").classList.remove("hidden"); $("startRow").classList.remove("hidden"); renderList(); };
+  home(); };
 
-state = load(); updateProgress(); renderList();
+function selectScene(i){
+  scene=SCENES[i]; PHRASES=scene.phrases; KEY = i===0 ? "coach-it-scene1" : "coach-it-"+scene.id;
+  try{ localStorage.setItem("coach-it-current", scene.id); }catch(e){}
+  $("hTitle").textContent=scene.title; $("hSub").textContent="Coach d'italien · "+scene.sub; $("hello").textContent=scene.hello;
+  document.title="Coach d'italien – "+scene.title;
+  state=load(); updateProgress(); renderList(); renderPick();
+}
+function renderPick(){
+  $("scenePick").innerHTML=SCENES.map((sc,i)=>{
+    let n=0; try{ const st=JSON.parse(localStorage.getItem(i===0?"coach-it-scene1":"coach-it-"+sc.id)); if(Array.isArray(st)) n=st.filter(x=>x.mastered).length; }catch(e){}
+    return `<button class="pick ${sc===scene?'on':''}" data-i="${i}">${sc.title}<small>${n} / ${sc.phrases.length} maîtrisées</small></button>`;
+  }).join("");
+  [...$("scenePick").querySelectorAll("button")].forEach(b=>b.onclick=()=>selectScene(+b.dataset.i));
+}
+function home(){
+  try{ speechSynthesis.cancel(); }catch(e){}
+  cur=null; $("cardBox").classList.add("hidden"); $("actions").classList.add("hidden"); $("done").classList.add("hidden");
+  $("startBox").classList.remove("hidden"); $("startRow").classList.remove("hidden"); renderPick(); renderList();
+}
+$("btnHome").onclick=home; $("btnScenes").onclick=home;
+let startIdx=0; try{ const c=localStorage.getItem("coach-it-current"); const k=SCENES.findIndex(x=>x.id===c); if(k>=0) startIdx=k; }catch(e){}
+selectScene(startIdx);
 if("serviceWorker" in navigator){ window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{})); }
 </script>
 </body>
