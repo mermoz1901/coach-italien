@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Coach d'italien – Al bar a Venezia</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Italien">
+<meta name="theme-color" content="#f6efe4">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6efe4; --card:#fffaf2; --ink:#2b2420; --muted:#7a6a5c;
+    --laguna:#1f6f78; --laguna-soft:#d7ecec; --terra:#c4553a; --terra-soft:#f6ddd3;
+    --ok:#2f7d4f; --ok-soft:#dcefe2; --line:#e6d9c6;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif}
+  body{min-height:100vh;display:flex;justify-content:center;padding:calc(20px + env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom))}
+  .app{width:100%;max-width:720px}
+  header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px}
+  h1{font-family:Fraunces,serif;font-weight:700;font-size:26px;margin:0;letter-spacing:-.01em}
+  h1 small{display:block;font-family:Inter,sans-serif;font-weight:500;font-size:13px;color:var(--muted);letter-spacing:0;margin-top:2px}
+  .progress{font-size:13px;color:var(--muted);text-align:right;white-space:nowrap}
+  .bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin:6px 0 18px}
+  .bar>i{display:block;height:100%;background:var(--laguna);width:0;transition:width .5s}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:0 6px 24px rgba(60,40,20,.06)}
+  .stage{display:flex;gap:18px;align-items:center}
+  .avatar{flex:0 0 150px}
+  .avatar svg{width:150px;height:150px;display:block}
+  .bubble{flex:1;position:relative;background:var(--laguna-soft);border-radius:18px;padding:16px 18px;min-height:110px;display:flex;flex-direction:column;justify-content:center}
+  .bubble:before{content:"";position:absolute;left:-10px;top:42px;border:10px solid transparent;border-right-color:var(--laguna-soft);border-left:0}
+  .mode{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--laguna);margin-bottom:6px}
+  .it{font-family:Fraunces,serif;font-size:30px;font-weight:700;line-height:1.15}
+  .fr{font-size:17px;color:var(--muted);margin-top:6px}
+  .fr.big{font-size:24px;color:var(--ink);font-weight:500}
+  .phon{font-size:14px;color:var(--laguna);margin-top:8px}
+  .hidden{display:none!important}
+  .row{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+  button{font:inherit;font-size:17px;font-weight:600;border:0;border-radius:14px;padding:14px 18px;cursor:pointer;min-height:54px;transition:transform .08s,opacity .2s}
+  button:active{transform:scale(.97)}
+  .b-sec{background:#efe4d3;color:var(--ink)}
+  .b-pri{background:var(--laguna);color:#fff}
+  .b-ok{background:var(--ok);color:#fff;flex:1}
+  .b-again{background:var(--terra);color:#fff;flex:1}
+  .b-mic{background:var(--ink);color:#fff}
+  .b-mic.listening{background:var(--terra);animation:pulse 1s infinite}
+  @keyframes pulse{50%{opacity:.7}}
+  .feedback{margin-top:14px;padding:12px 14px;border-radius:12px;font-size:15px}
+  .feedback.ok{background:var(--ok-soft);color:var(--ok)}
+  .feedback.ko{background:var(--terra-soft);color:var(--terra)}
+  .feedback.info{background:#efe4d3;color:var(--muted)}
+  .dots{display:flex;gap:6px;margin-top:10px}
+  .dots span{width:12px;height:12px;border-radius:50%;background:var(--line)}
+  .dots span.on{background:var(--laguna)}
+  .start{text-align:center;padding:30px 10px}
+  .start p{color:var(--muted);line-height:1.5;max-width:460px;margin:10px auto 20px}
+  .list{margin-top:22px}
+  .list h2{font-family:Fraunces,serif;font-size:18px;margin:0 0 10px}
+  .item{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
+  .item b{font-weight:600}
+  .item em{font-style:normal;color:var(--muted)}
+  .tag{font-size:12px;font-weight:600;padding:3px 9px;border-radius:99px;white-space:nowrap;align-self:center}
+  .t-new{background:#efe4d3;color:var(--muted)} .t-rep{background:var(--laguna-soft);color:var(--laguna)}
+  .t-mem{background:var(--terra-soft);color:var(--terra)} .t-ok{background:var(--ok-soft);color:var(--ok)}
+  .foot{display:flex;justify-content:space-between;margin-top:16px;font-size:13px;color:var(--muted)}
+  .foot button{font-size:13px;min-height:auto;padding:6px 10px;background:none;color:var(--muted);text-decoration:underline}
+  @media (max-width:560px){
+    .stage{flex-direction:column}
+    .avatar{flex-basis:auto}
+    .bubble:before{display:none}
+    .it{font-size:26px}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Al bar a Venezia<small>Coach d'italien · scène 1</small></h1>
+    <div class="progress"><span id="pTxt">0 / 10 maîtrisées</span></div>
+  </header>
+  <div class="bar"><i id="pBar"></i></div>
+
+  <div class="card">
+    <div class="stage">
+      <div class="avatar" aria-hidden="true">
+        <svg viewBox="0 0 150 150">
+          <circle cx="75" cy="75" r="72" fill="#d7ecec"/>
+          <path d="M28 150c4-30 22-44 47-44s43 14 47 44z" fill="#1f6f78"/>
+          <path d="M60 108l15 14 15-14" fill="#fffaf2"/>
+          <rect x="66" y="92" width="18" height="18" rx="6" fill="#e8b996"/>
+          <path d="M38 70c0-28 16-44 37-44s37 16 37 44c0 14-4 28-8 34l-4-30H50l-4 30c-4-6-8-20-8-34z" fill="#3b2418"/>
+          <ellipse cx="75" cy="68" rx="27" ry="31" fill="#f0c6a4"/>
+          <path d="M48 58c6-16 18-22 30-22s20 6 24 18c-14 2-34 0-54 4z" fill="#3b2418"/>
+          <g id="eyes">
+            <ellipse cx="65" cy="66" rx="3.2" ry="3.6" fill="#2b2420"/>
+            <ellipse cx="85" cy="66" rx="3.2" ry="3.6" fill="#2b2420"/>
+          </g>
+          <path d="M59 58q6-4 12 0M79 58q6-4 12 0" stroke="#3b2418" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <circle cx="58" cy="78" r="5" fill="#e9a08a" opacity=".5"/>
+          <circle cx="92" cy="78" r="5" fill="#e9a08a" opacity=".5"/>
+          <ellipse id="mouth" cx="75" cy="84" rx="7" ry="2" fill="#a6413a"/>
+        </svg>
+      </div>
+      <div class="bubble">
+        <div id="startBox" class="start" style="padding:0;text-align:left">
+          <div class="mode">Ciao !</div>
+          <div class="it" style="font-size:24px">Sono Giulia, la barista.</div>
+          <div class="fr">Je vous fais répéter jusqu'à ce que ce soit automatique.</div>
+        </div>
+        <div id="cardBox" class="hidden">
+          <div class="mode" id="mode"></div>
+          <div class="it" id="it"></div>
+          <div class="fr" id="fr"></div>
+          <div class="phon" id="phon"></div>
+          <div class="dots" id="dots"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="startRow" class="row">
+      <button class="b-pri" id="btnStart" style="flex:1">▶︎ Commencer</button>
+    </div>
+
+    <div id="actions" class="hidden">
+      <div class="row">
+        <button class="b-sec" id="btnPlay">🔊 Réécouter</button>
+        <button class="b-sec" id="btnSlow">🐢 Lentement</button>
+        <button class="b-mic hidden" id="btnMic">🎤 Je le dis</button>
+        <button class="b-pri hidden" id="btnReveal">👀 Voir la réponse</button>
+      </div>
+      <div id="fb" class="feedback hidden"></div>
+      <div class="row" id="judge">
+        <button class="b-again" id="btnAgain">🔁 Encore</button>
+        <button class="b-ok" id="btnOk">✅ Je l'ai bien dit</button>
+      </div>
+    </div>
+
+    <div id="done" class="hidden start">
+      <div class="it">Bravissimo !</div>
+      <p>Les 10 formules du café sont maîtrisées. Rejouez la scène demain pour les ancrer : c'est la répétition espacée qui les fixe.</p>
+      <button class="b-pri" id="btnReplay">Rejouer la scène</button>
+    </div>
+  </div>
+
+  <div class="list">
+    <h2>Les formules de la scène</h2>
+    <div id="list"></div>
+  </div>
+
+  <div class="foot">
+    <span id="voiceInfo"></span>
+    <button id="btnReset">Remettre à zéro</button>
+  </div>
+</div>
+
+<script>
+const PHRASES = [
+  {it:"Buongiorno!", fr:"Bonjour !", ph:"bouone-DJOR-no"},
+  {it:"Un caffè, per favore.", fr:"Un café, s'il vous plaît.", ph:"oune kaf-FÈ, pèr fa-VO-ré"},
+  {it:"Vorrei un cappuccino.", fr:"Je voudrais un cappuccino.", ph:"vor-RÈ-i oune kap-pout-CHI-no"},
+  {it:"Quanto costa?", fr:"Combien ça coûte ?", ph:"KOUANE-to KOS-ta"},
+  {it:"Il conto, per favore.", fr:"L'addition, s'il vous plaît.", ph:"il KONE-to, pèr fa-VO-ré"},
+  {it:"Posso pagare con la carta?", fr:"Je peux payer par carte ?", ph:"POS-so pa-GA-ré kone la KAR-ta"},
+  {it:"Grazie mille!", fr:"Merci beaucoup !", ph:"GRA-tsié MIL-lé"},
+  {it:"Prego.", fr:"Je vous en prie.", ph:"PRÈ-go"},
+  {it:"Scusi, dov'è il bagno?", fr:"Excusez-moi, où sont les toilettes ?", ph:"SKOU-zi, do-VÈ il BA-gno"},
+  {it:"Arrivederci!", fr:"Au revoir !", ph:"ar-ri-vé-DÈR-tchi"}
+];
+// Chaque formule passe par 2 étapes : 0 = écoute et répète, 1 = de mémoire. 2 réussites d'affilée par étape.
+const STREAK = 2, ACTIVE = 4, KEY = "coach-it-scene1";
+
+let state, queue, cur = null, revealed = false;
+
+function fresh(){ return PHRASES.map(()=>({stage:0, streak:0, mastered:false, seen:false})); }
+function load(){
+  try{ const s = JSON.parse(localStorage.getItem(KEY)); if(Array.isArray(s) && s.length===PHRASES.length) return s; }catch(e){}
+  return fresh();
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+
+function buildQueue(){
+  queue = [];
+  for(let i=0;i<PHRASES.length && queue.length<ACTIVE;i++) if(!state[i].mastered) queue.push(i);
+}
+function refill(){
+  const inPlay = new Set(queue.concat(cur==null?[]:[cur]));
+  for(let i=0;i<PHRASES.length && queue.length + (cur==null?0:1) < ACTIVE;i++)
+    if(!state[i].mastered && !inPlay.has(i)) { queue.push(i); inPlay.add(i); }
+}
+
+/* ---------- Voix ---------- */
+let voice = null;
+function pickVoice(){
+  if(!("speechSynthesis" in window)) return;
+  const vs = speechSynthesis.getVoices().filter(v=>/^it/i.test(v.lang));
+  const pref = ["Alice","Federica","Emma","Paola","Elsa","Google italiano"];
+  voice = vs.find(v=>pref.some(p=>v.name.includes(p))) || vs[0] || null;
+  document.getElementById("voiceInfo").textContent = voice ? "Voix : "+voice.name : "Aucune voix italienne trouvée sur cet appareil";
+}
+if("speechSynthesis" in window){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+
+const mouth = document.getElementById("mouth");
+let mouthTimer = null;
+function talk(on){
+  clearInterval(mouthTimer);
+  if(on){ mouthTimer = setInterval(()=>{ mouth.setAttribute("ry", (2 + Math.random()*7).toFixed(1)); }, 110); }
+  else mouth.setAttribute("ry","2");
+}
+function say(text, rate=0.9){
+  if(!("speechSynthesis" in window)) return;
+  try{
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "it-IT"; u.rate = rate; if(voice) u.voice = voice;
+    u.onstart = ()=>talk(true); u.onend = ()=>talk(false); u.onerror = ()=>talk(false);
+    speechSynthesis.speak(u);
+    setTimeout(()=>{ if(!speechSynthesis.speaking) talk(false); }, 6000);
+  }catch(e){ talk(false); }
+}
+// clignement des yeux
+setInterval(()=>{ const e=document.getElementById("eyes"); e.style.transform="scaleY(.1)"; e.style.transformOrigin="75px 66px"; setTimeout(()=>e.style.transform="",140); }, 4200);
+
+/* ---------- Micro (s'active seulement si le navigateur l'autorise) ---------- */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec = null, micOk = !!SR;
+function norm(s){ return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z' ]/g," ").replace(/\s+/g," ").trim(); }
+function similarity(a,b){
+  a=norm(a); b=norm(b); if(!a.length||!b.length) return 0;
+  const d=[...Array(b.length+1)].map((_,i)=>[i]);
+  for(let j=1;j<=a.length;j++) d[0][j]=j;
+  for(let i=1;i<=b.length;i++) for(let j=1;j<=a.length;j++)
+    d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(b[i-1]===a[j-1]?0:1));
+  return 1 - d[b.length][a.length]/Math.max(a.length,b.length);
+}
+function listen(){
+  if(!micOk) return;
+  const btn = document.getElementById("btnMic");
+  try{
+    rec = new SR(); rec.lang="it-IT"; rec.interimResults=false; rec.maxAlternatives=3;
+    btn.classList.add("listening"); btn.textContent="🎤 J'écoute…";
+    rec.onresult = ev=>{
+      const alts=[...ev.results[0]].map(r=>r.transcript);
+      const best=Math.max(...alts.map(t=>similarity(t,PHRASES[cur].it)));
+      if(best>=0.75){ showFb("ok","Perfetto ! J'ai entendu « "+alts[0]+" »"); setTimeout(()=>answer(true),1200); }
+      else { showFb("ko","J'ai entendu « "+alts[0]+" ». Réécoutez et réessayez."); if(cur!=null && PHRASES[cur]) {} }
+    };
+    rec.onerror = ()=>{ micOk=false; document.getElementById("btnMic").classList.add("hidden");
+      showFb("info","Le micro n'est pas disponible ici : dites la phrase à voix haute, puis jugez-vous avec les boutons."); };
+    rec.onend = ()=>{ btn.classList.remove("listening"); btn.textContent="🎤 Je le dis"; };
+    rec.start();
+  }catch(e){ micOk=false; btn.classList.add("hidden"); }
+}
+
+/* ---------- Déroulé ---------- */
+const $ = id=>document.getElementById(id);
+function showFb(kind, txt){ const f=$("fb"); f.className="feedback "+kind; f.textContent=txt; }
+function hideFb(){ $("fb").className="feedback hidden"; }
+
+function next(){
+  refill();
+  if(!queue.length){ cur=null; finish(); return; }
+  cur = queue.shift();
+  render();
+}
+function render(){
+  const p=PHRASES[cur], s=state[cur];
+  revealed = s.stage===0;
+  $("startBox").classList.add("hidden"); $("cardBox").classList.remove("hidden");
+  $("startRow").classList.add("hidden"); $("actions").classList.remove("hidden"); $("done").classList.add("hidden");
+  hideFb();
+  if(s.stage===0){
+    $("mode").textContent = s.seen ? "Écoute et répète" : "Nouvelle formule · écoute et répète";
+    $("it").textContent=p.it; $("it").classList.remove("hidden");
+    $("fr").textContent=p.fr; $("fr").className="fr";
+    $("phon").textContent="Prononciation : "+p.ph; $("phon").classList.remove("hidden");
+  } else {
+    $("mode").textContent="De mémoire · comment dit-on en italien ?";
+    $("it").classList.add("hidden"); $("phon").classList.add("hidden");
+    $("fr").textContent=p.fr; $("fr").className="fr big";
+  }
+  $("dots").innerHTML = [0,1,2,3].map(k=>`<span class="${(s.stage*STREAK + s.streak)>k?'on':''}"></span>`).join("");
+  $("btnMic").classList.toggle("hidden", !micOk);
+  $("btnReveal").classList.toggle("hidden", revealed);
+  $("btnPlay").classList.toggle("hidden", !revealed);
+  $("btnSlow").classList.toggle("hidden", !revealed);
+  $("judge").classList.toggle("hidden", !revealed && !micOk ? true : !revealed);
+  s.seen=true; save();
+  if(s.stage===0) say(p.it);
+  else say({0:"Come si dice?",1:"Ricordi?",2:"E adesso?"}[Math.floor(Math.random()*3)], 1);
+  renderList();
+}
+function reveal(){
+  revealed=true; const p=PHRASES[cur];
+  $("it").textContent=p.it; $("it").classList.remove("hidden");
+  $("phon").textContent="Prononciation : "+p.ph; $("phon").classList.remove("hidden");
+  $("fr").className="fr";
+  $("btnReveal").classList.add("hidden"); $("btnPlay").classList.remove("hidden"); $("btnSlow").classList.remove("hidden");
+  $("judge").classList.remove("hidden");
+  say(p.it);
+}
+function answer(ok){
+  if(cur==null) return;
+  const s=state[cur];
+  if(ok){
+    s.streak++;
+    if(s.streak>=STREAK){
+      s.streak=0;
+      if(s.stage===0){ s.stage=1; queue.splice(Math.min(2,queue.length),0,cur); }
+      else { s.mastered=true; say("Bravo!",1); }
+    } else queue.splice(Math.min(3,queue.length),0,cur);
+  } else {
+    // raté : la formule revient très vite
+    s.streak=0;
+    queue.splice(Math.min(1,queue.length),0,cur);
+  }
+  save(); updateProgress(); cur=null;
+  setTimeout(next, ok ? 350 : 150);
+}
+function finish(){
+  $("cardBox").classList.add("hidden"); $("startBox").classList.add("hidden");
+  $("actions").classList.add("hidden"); $("done").classList.remove("hidden");
+  say("Bravissimo! Ci vediamo domani.",1); renderList();
+}
+function updateProgress(){
+  const n=state.filter(s=>s.mastered).length;
+  $("pTxt").textContent = n+" / "+PHRASES.length+" maîtrisées";
+  $("pBar").style.width = (100*n/PHRASES.length)+"%";
+}
+function renderList(){
+  $("list").innerHTML = PHRASES.map((p,i)=>{
+    const s=state[i];
+    const [cls,lab] = s.mastered?["t-ok","Maîtrisée"]: !s.seen?["t-new","À venir"]: s.stage===0?["t-rep","Répétition"]:["t-mem","De mémoire"];
+    return `<div class="item"><div><b>${p.it}</b><br><em>${p.fr}</em></div><span class="tag ${cls}">${lab}</span></div>`;
+  }).join("");
+}
+
+$("btnStart").onclick=()=>{ pickVoice(); buildQueue(); next(); };
+$("btnPlay").onclick=()=>say(PHRASES[cur].it);
+$("btnSlow").onclick=()=>say(PHRASES[cur].it,0.6);
+$("btnMic").onclick=listen;
+$("btnReveal").onclick=reveal;
+$("btnOk").onclick=()=>answer(true);
+$("btnAgain").onclick=()=>{ if(!revealed) reveal(); answer(false); };
+$("btnReplay").onclick=()=>{ state=fresh(); save(); updateProgress(); buildQueue(); next(); };
+$("btnReset").onclick=()=>{ state=fresh(); save(); updateProgress(); cur=null;
+  $("cardBox").classList.add("hidden"); $("actions").classList.add("hidden"); $("done").classList.add("hidden");
+  $("startBox").classList.remove("hidden"); $("startRow").classList.remove("hidden"); renderList(); };
+
+state = load(); updateProgress(); renderList();
+if("serviceWorker" in navigator){ window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{})); }
+</script>
+</body>
+</html>
