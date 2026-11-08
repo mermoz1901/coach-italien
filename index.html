@@ -70,7 +70,7 @@
   .t-new{background:#efe4d3;color:var(--muted)} .t-rep{background:var(--laguna-soft);color:var(--laguna)}
   .t-mem{background:var(--terra-soft);color:var(--terra)} .t-ok{background:var(--ok-soft);color:var(--ok)}
   .foot{display:flex;justify-content:space-between;margin-top:16px;font-size:13px;color:var(--muted)}
-  .pick{flex:1;background:#efe4d3;color:var(--ink);text-align:left;font-size:15px}.pick.on{background:var(--laguna-soft);outline:2px solid var(--laguna)}.pick small{display:block;font-weight:500;color:var(--muted);font-size:13px;margin-top:2px}
+  .pick{flex:1 1 45%;background:#efe4d3;color:var(--ink);text-align:left;font-size:15px}.pick.on{background:var(--laguna-soft);outline:2px solid var(--laguna)}.pick small{display:block;font-weight:500;color:var(--muted);font-size:13px;margin-top:2px}
   .foot button{font-size:13px;min-height:auto;padding:6px 10px;background:none;color:var(--muted);text-decoration:underline}
   @media (max-width:560px){
     .stage{flex-direction:column}
@@ -126,7 +126,7 @@
     </div>
 
     <div id="startRow">
-      <div class="mode" style="margin-top:18px">Choisissez la scène</div>
+      <div class="mode" style="margin-top:18px">Choisissez un module</div>
       <div class="row" id="scenePick" style="margin-top:8px"></div>
       <div class="row"><button class="b-pri" id="btnStart" style="flex:1">▶︎ Commencer</button></div>
     </div>
@@ -147,25 +147,88 @@
 
     <div id="done" class="hidden start">
       <div class="it">Bravissimo !</div>
-      <p>Les 10 formules de la scène sont maîtrisées. Rejouez la scène demain pour les ancrer : c'est la répétition espacée qui les fixe.</p>
-      <button class="b-pri" id="btnReplay">Rejouer la scène</button> <button class="b-sec" id="btnHome">Changer de scène</button>
+      <p>Tout le module est maîtrisé. Rejouez la scène demain pour les ancrer : c'est la répétition espacée qui les fixe.</p>
+      <button class="b-pri" id="btnReplay">Rejouer la scène</button> <button class="b-sec" id="btnHome">Changer de module</button>
     </div>
   </div>
 
   <div class="list">
-    <h2>Les formules de la scène</h2>
+    <h2>Les formules du module</h2>
     <div id="list"></div>
   </div>
 
   <div class="foot">
     <span id="voiceInfo"></span>
-    <span><button id="btnScenes">Scènes</button><button id="btnReset">Remettre à zéro</button></span>
+    <span><button id="btnScenes">Modules</button><button id="btnReset">Remettre à zéro</button></span>
   </div>
 </div>
 
 <script>
 const SCENES = [
- {id:"bar", title:"Al bar a Venezia", sub:"scène 1 · au café", hello:"Sono Giulia, la barista.", phrases:[
+ {id:"alfabeto", group:"Les bases", title:"L'alfabeto", sub:"bases · alphabet et prononciation", hello:"Impariamo l'alfabeto!", phrases:[
+  {it:"A, B, C, D, E", fr:"Les lettres A à E", ph:"a, bi, tchi, di, é"},
+  {it:"F, G, H, I, L", fr:"Les lettres F à L", ph:"ÈF-fé, dji, AK-ka, i, ÈL-lé"},
+  {it:"M, N, O, P, Q", fr:"Les lettres M à Q", ph:"ÈM-mé, ÈN-né, o, pi, kou"},
+  {it:"R, S, T, U, V, Z", fr:"Les lettres R à Z", ph:"ÈR-ré, ÈS-sé, ti, ou, vou, DZÈ-ta"},
+  {it:"J, K, W, X, Y", fr:"Les lettres étrangères", ph:"i LOUN-ga, KAP-pa, DOP-pia vou, iks, IP-si-lone"},
+  {it:"ciao, cena", fr:"C + e/i se dit « tch »", ph:"TCHA-o, TCHÉ-na"},
+  {it:"chiesa, chilo", fr:"CH se dit « k »", ph:"KIÈ-za, KI-lo"},
+  {it:"gelato, giro", fr:"G + e/i se dit « dj »", ph:"djé-LA-to, DJI-ro"},
+  {it:"spaghetti, ghiaccio", fr:"GH se dit « g » dur", ph:"spa-GHÈT-ti, GHIAT-tcho"},
+  {it:"famiglia, figlio", fr:"GLI se dit « lli » mouillé", ph:"fa-MI-lia, FI-lio"},
+  {it:"gnocchi, bagno", fr:"GN se dit comme dans « agneau »", ph:"GNOK-ki, BA-gno"},
+  {it:"pesce, scienza", fr:"SC + e/i se dit « ch »", ph:"PÉ-ché, CHIÈN-tsa"},
+  {it:"scuola, schiena", fr:"SC + a/o/u et SCH se disent « sk »", ph:"SKOUO-la, SKIÈ-na"}]},
+ {id:"generi", group:"Les bases", title:"Maschile e femminile", sub:"bases · genres et articles", hello:"Il, lo, la… andiamo!", phrases:[
+  {it:"il ragazzo", fr:"le garçon (IL devant une consonne)", ph:"il ra-GAT-tso"},
+  {it:"lo studente", fr:"l'étudiant (LO devant s + consonne, z)", ph:"lo stou-DÈN-té"},
+  {it:"l'amico", fr:"l'ami (L' devant une voyelle)", ph:"la-MI-ko"},
+  {it:"la ragazza", fr:"la fille", ph:"la ra-GAT-tsa"},
+  {it:"l'amica", fr:"l'amie", ph:"la-MI-ka"},
+  {it:"i ragazzi", fr:"les garçons (I = pluriel de IL)", ph:"i ra-GAT-tsi"},
+  {it:"gli studenti", fr:"les étudiants (GLI = pluriel de LO)", ph:"lli stou-DÈN-ti"},
+  {it:"gli amici", fr:"les amis (GLI devant une voyelle)", ph:"lli a-MI-tchi"},
+  {it:"le ragazze", fr:"les filles (LE = pluriel féminin)", ph:"lé ra-GAT-tsé"},
+  {it:"un caffè, uno spritz", fr:"un café, un spritz (UNO devant s + consonne, z)", ph:"oune kaf-FÈ, OU-no SPRITS"},
+  {it:"una pizza, un'arancia", fr:"une pizza, une orange", ph:"OU-na PIT-tsa, ou-na-RANE-tcha"},
+  {it:"il vino rosso, la casa rossa", fr:"le vin rouge, la maison rouge (accord)", ph:"il VI-no ROS-so, la KA-za ROS-sa"}]},
+ {id:"numeri", group:"Les bases", title:"I numeri", sub:"bases · les nombres", hello:"Contiamo insieme!", phrases:[
+  {it:"uno, due, tre", fr:"1, 2, 3", ph:"OU-no, DOU-é, TRÉ"},
+  {it:"quattro, cinque, sei", fr:"4, 5, 6", ph:"KOUAT-tro, TCHINE-koué, SÈ-i"},
+  {it:"sette, otto, nove, dieci", fr:"7, 8, 9, 10", ph:"SÈT-té, OT-to, NO-vé, DIÈ-tchi"},
+  {it:"undici, dodici, tredici", fr:"11, 12, 13", ph:"OUN-di-tchi, DO-di-tchi, TRÉ-di-tchi"},
+  {it:"quattordici, quindici, sedici", fr:"14, 15, 16", ph:"kouat-TOR-di-tchi, KOUINE-di-tchi, SÉ-di-tchi"},
+  {it:"diciassette, diciotto, diciannove, venti", fr:"17, 18, 19, 20", ph:"di-tchas-SÈT-té, di-TCHOT-to, di-tchan-NO-vé, VÈN-ti"},
+  {it:"trenta, quaranta, cinquanta", fr:"30, 40, 50", ph:"TRÈN-ta, koua-RAN-ta, tchine-KOUANE-ta"},
+  {it:"sessanta, settanta, ottanta, novanta", fr:"60, 70, 80, 90", ph:"sès-SAN-ta, sèt-TAN-ta, ot-TAN-ta, no-VAN-ta"},
+  {it:"cento, mille, duemila", fr:"100, 1000, 2000", ph:"TCHÈN-to, MIL-lé, doué-MI-la"},
+  {it:"ventuno, ventotto", fr:"21, 28 (la voyelle tombe)", ph:"vèn-TOU-no, vèn-TOT-to"},
+  {it:"Sono dieci euro.", fr:"Ça fait dix euros.", ph:"SO-no DIÈ-tchi ÈOU-ro"}]},
+ {id:"giorni", group:"Les bases", title:"I giorni", sub:"bases · les jours", hello:"Che giorno è oggi?", phrases:[
+  {it:"lunedì", fr:"lundi", ph:"lou-né-DI"},
+  {it:"martedì", fr:"mardi", ph:"mar-té-DI"},
+  {it:"mercoledì", fr:"mercredi", ph:"mèr-ko-lé-DI"},
+  {it:"giovedì", fr:"jeudi", ph:"djo-vé-DI"},
+  {it:"venerdì", fr:"vendredi", ph:"vé-nèr-DI"},
+  {it:"sabato", fr:"samedi", ph:"SA-ba-to"},
+  {it:"domenica", fr:"dimanche", ph:"do-MÉ-ni-ka"},
+  {it:"oggi, domani, ieri", fr:"aujourd'hui, demain, hier", ph:"OD-dji, do-MA-ni, IÈ-ri"},
+  {it:"Che giorno è oggi?", fr:"Quel jour sommes-nous ?", ph:"ké DJOR-no è OD-dji"},
+  {it:"il fine settimana", fr:"le week-end", ph:"il FI-né sèt-ti-MA-na"}]},
+ {id:"mesi", group:"Les bases", title:"I mesi", sub:"bases · les mois", hello:"Gennaio, febbraio…", phrases:[
+  {it:"gennaio", fr:"janvier", ph:"djèn-NA-io"},
+  {it:"febbraio", fr:"février", ph:"fèb-BRA-io"},
+  {it:"marzo", fr:"mars", ph:"MAR-tso"},
+  {it:"aprile", fr:"avril", ph:"a-PRI-lé"},
+  {it:"maggio", fr:"mai", ph:"MAD-djo"},
+  {it:"giugno", fr:"juin", ph:"DJOU-gno"},
+  {it:"luglio", fr:"juillet", ph:"LOU-lio"},
+  {it:"agosto", fr:"août", ph:"a-GOS-to"},
+  {it:"settembre", fr:"septembre", ph:"sèt-TÈM-bré"},
+  {it:"ottobre", fr:"octobre", ph:"ot-TO-bré"},
+  {it:"novembre", fr:"novembre", ph:"no-VÈM-bré"},
+  {it:"dicembre", fr:"décembre", ph:"di-TCHÈM-bré"}]},
+ {id:"bar", group:"Les scènes", title:"Al bar a Venezia", sub:"scène 1 · au café", hello:"Sono Giulia, la barista.", phrases:[
   {it:"Buongiorno!", fr:"Bonjour !", ph:"bouone-DJOR-no"},
   {it:"Un caffè, per favore.", fr:"Un café, s'il vous plaît.", ph:"oune kaf-FÈ, pèr fa-VO-ré"},
   {it:"Vorrei un cappuccino.", fr:"Je voudrais un cappuccino.", ph:"vor-RÈ-i oune kap-pout-CHI-no"},
@@ -404,7 +467,7 @@ $("btnReset").onclick=()=>{ state=fresh(); save(); updateProgress(); cur=null;
   home(); };
 
 function selectScene(i){
-  scene=SCENES[i]; PHRASES=scene.phrases; KEY = i===0 ? "coach-it-scene1" : "coach-it-"+scene.id;
+  scene=SCENES[i]; PHRASES=scene.phrases; KEY = scene.id==="bar" ? "coach-it-scene1" : "coach-it-"+scene.id;
   try{ localStorage.setItem("coach-it-current", scene.id); }catch(e){}
   $("hTitle").textContent=scene.title; $("hSub").textContent="Coach d'italien · "+scene.sub; $("hello").textContent=scene.hello;
   document.title="Coach d'italien – "+scene.title;
@@ -412,8 +475,9 @@ function selectScene(i){
 }
 function renderPick(){
   $("scenePick").innerHTML=SCENES.map((sc,i)=>{
-    let n=0; try{ const st=JSON.parse(localStorage.getItem(i===0?"coach-it-scene1":"coach-it-"+sc.id)); if(Array.isArray(st)) n=st.filter(x=>x.mastered).length; }catch(e){}
-    return `<button class="pick ${sc===scene?'on':''}" data-i="${i}">${sc.title}<small>${n} / ${sc.phrases.length} maîtrisées</small></button>`;
+    let n=0; try{ const st=JSON.parse(localStorage.getItem(sc.id==="bar"?"coach-it-scene1":"coach-it-"+sc.id)); if(Array.isArray(st)) n=st.filter(x=>x.mastered).length; }catch(e){}
+    const head = (i===0 || SCENES[i-1].group!==sc.group) ? `<div class="mode" style="flex-basis:100%;margin:${i?'10px':'0'} 0 0">${sc.group||"Les scènes"}</div>` : "";
+    return head+`<button class="pick ${sc===scene?'on':''}" data-i="${i}">${sc.title}<small>${n} / ${sc.phrases.length} maîtrisées</small></button>`;
   }).join("");
   [...$("scenePick").querySelectorAll("button")].forEach(b=>b.onclick=()=>selectScene(+b.dataset.i));
 }
