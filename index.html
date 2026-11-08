@@ -228,6 +228,18 @@ const SCENES = [
   {it:"ottobre", fr:"octobre", ph:"ot-TO-bré"},
   {it:"novembre", fr:"novembre", ph:"no-VÈM-bré"},
   {it:"dicembre", fr:"décembre", ph:"di-TCHÈM-bré"}]},
+ {id:"date", group:"Les bases", title:"Le date", sub:"bases · les dates", hello:"Quanti ne abbiamo oggi?", phrases:[
+  {it:"Oggi è il primo maggio.", fr:"Aujourd'hui, c'est le 1er mai (« primo » pour le 1er).", ph:"OD-dji è il PRI-mo MAD-djo"},
+  {it:"il due giugno", fr:"le 2 juin", ph:"il DOU-é DJOU-gno"},
+  {it:"l'otto marzo", fr:"le 8 mars (L' devant une voyelle)", ph:"LOT-to MAR-tso"},
+  {it:"l'undici novembre", fr:"le 11 novembre", ph:"LOUN-di-tchi no-VÈM-bré"},
+  {it:"Quanti ne abbiamo oggi?", fr:"On est le combien aujourd'hui ?", ph:"KOUANE-ti né ab-BIA-mo OD-dji"},
+  {it:"Ne abbiamo venti.", fr:"On est le 20.", ph:"né ab-BIA-mo VÈN-ti"},
+  {it:"lunedì tre agosto", fr:"lundi 3 août", ph:"lou-né-DI TRÉ a-GOS-to"},
+  {it:"nel duemilaventisei", fr:"en 2026", ph:"nèl doué-mi-la-vèn-ti-SÈ-i"},
+  {it:"Sono nato il quattordici luglio.", fr:"Je suis né le 14 juillet.", ph:"SO-no NA-to il kouat-TOR-di-tchi LOU-lio"},
+  {it:"Arrivo a Venezia il dieci aprile.", fr:"J'arrive à Venise le 10 avril.", ph:"ar-RI-vo a vé-NÉ-tsia il DIÈ-tchi a-PRI-lé"},
+  {it:"dal cinque al dodici settembre", fr:"du 5 au 12 septembre", ph:"dal TCHINE-koué al DO-di-tchi sèt-TÈM-bré"}]},
  {id:"bar", group:"Les scènes", title:"Al bar a Venezia", sub:"scène 1 · au café", hello:"Sono Giulia, la barista.", phrases:[
   {it:"Buongiorno!", fr:"Bonjour !", ph:"bouone-DJOR-no"},
   {it:"Un caffè, per favore.", fr:"Un café, s'il vous plaît.", ph:"oune kaf-FÈ, pèr fa-VO-ré"},
@@ -476,7 +488,7 @@ function selectScene(i){
 function renderPick(){
   $("scenePick").innerHTML=SCENES.map((sc,i)=>{
     let n=0; try{ const st=JSON.parse(localStorage.getItem(sc.id==="bar"?"coach-it-scene1":"coach-it-"+sc.id)); if(Array.isArray(st)) n=st.filter(x=>x.mastered).length; }catch(e){}
-    const head = (i===0 || SCENES[i-1].group!==sc.group) ? `<div class="mode" style="flex-basis:100%;margin:${i?'10px':'0'} 0 0">${sc.group||"Les scènes"}</div>` : "";
+    const head = (i===0 || (SCENES[i-1].group||"Les scènes")!==(sc.group||"Les scènes")) ? `<div class="mode" style="flex-basis:100%;margin:${i?'10px':'0'} 0 0">${sc.group||"Les scènes"}</div>` : "";
     return head+`<button class="pick ${sc===scene?'on':''}" data-i="${i}">${sc.title}<small>${n} / ${sc.phrases.length} maîtrisées</small></button>`;
   }).join("");
   [...$("scenePick").querySelectorAll("button")].forEach(b=>b.onclick=()=>selectScene(+b.dataset.i));
